@@ -223,7 +223,7 @@ matching = nx.max_weight_matching(G)
 
 
 
-### Get tthe ROC curve
+### Get the ROC curve
 
 It's pretty cumbursome to compute so you can just use
 
@@ -235,3 +235,31 @@ fp_rate, tp_rate, _ = roc_curve(ground_truth_label, prediction)
 plt.plot(fp_rate, tp_rate)
 ```
 
+
+### Random Forests
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+## split in train and test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2)
+
+clf = RandomForestClassifier(n_estimators=100)
+clf.fit(X_train, y_train)
+
+accuracy_score(y_test, clf.predict(X_test))
+```
+
+
+And if you want to do **cross validation** on any hyper parameters (here, say, n_estimators) proceed the following way
+
+```python
+from sklearn.model_selection import cross_val_score
+
+for estimators in [10, 50, 100, 200]:
+    clf = RandomForestClassifier(n_estimators=estimators)
+    scores = cross_val_score(clf, X_train, y_train, cv=5)
+    print(f"For {estimators} the cross val score in {scores.mean()}")
+```
