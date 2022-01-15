@@ -263,3 +263,129 @@ for estimators in [10, 50, 100, 200]:
     scores = cross_val_score(clf, X_train, y_train, cv=5)
     print(f"For {estimators} the cross val score in {scores.mean()}")
 ```
+
+
+### Kmeans
+
+##### Plot bidimensional clustering
+
+the following snippet :
+```python
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+MIN_CLUSTERS = 2
+MAX_CLUSTERS = 10
+
+# Compute number of row and columns
+COLUMNS = 3
+ROWS = math.ceil((MAX_CLUSTERS-MIN_CLUSTERS)/COLUMNS)
+fig, axs = plt.subplots(ROWS, COLUMNS, figsize=(10,8), sharey=True, sharex=True)
+
+# Plot the clusters
+for n_clusters, ax in zip(range(MIN_CLUSTERS, MAX_CLUSTERS+1), axs.flatten()):
+    # Cluster the data with the current number of clusters
+    kmean = KMeans(n_clusters=n_clusters).fit(X)
+    # Plot the data by using the labels as color
+    ax.scatter(X[:,0], X[:,1], c=kmean.labels_, alpha=0.6)
+    ax.set_title(f"{n_clusters} clusters")
+    ax.set_xlabel("Feature 1")
+    ax.set_ylabel("Feature 2")
+    # Plot the centroids
+    for c in kmean.cluster_centers_:
+        ax.scatter(c[0], c[1], marker="+", color="red")
+
+plt.tight_layout()
+```
+
+Produces :
+
+<img src="static/clustering.png"/>
+
+
+
+#### Chose the hyperparameter k
+
+1) Maximizing the silhouette
+
+```python
+silhouettes = []
+
+# Try multiple k
+for k in range(2, 11):
+    # Cluster the data and assigne the labels
+    labels = KMeans(n_clusters=k).fit_predict(X)
+    # Get the Silhouette score
+    score = silhouette_score(X, labels)
+    silhouettes.append({"k": k, "score": score})
+
+```
+
+2) Chosing the elbow of inertia curve
+
+```python
+
+intertias = []
+for k in range(2, 11):
+    kmeans = KMeans(n_clusters=k).fit(features_X)
+    inertias.append({"k": k, "sse": kmeans.inertia_})
+```
+
+
+### Dimensionality reduction
+
+#### Using TSNE
+
+```python
+from sklearn.manifold import TSNE
+
+X_reduced_tsne = TSNE(n_components=2).fit_transform(X)
+```
+
+#### Using PCA
+
+```python
+from sklearn.decomposition import PCA
+
+X_reduced_pca = PCA(n_components=2).fit(X).transform(X)
+```
+
+### Clustering using DBSCAN
+
+```python
+from sklearn.cluster import DBSCAN
+
+labels = DBSCAN(eps=eps).fit_predict(X)
+
+```
+
+##### FInd the parameter epsilon
+
+```python
+# Create a list of eps
+eps_list = np.linspace(0.05, 0.15, 14)
+
+# Compute number of row and columns
+COLUMNS = 7
+ROWS = math.ceil(len(eps_list)/COLUMNS)
+
+fig, axs = plt.subplots(ROWS, COLUMNS, figsize=(12, 4), sharey=True, sharex=True)
+
+for eps, ax in zip(eps, axs):
+    labels = DBSCAN(eps=eps).fit_predict(X)
+    ax.scatter(X_moons[:,0], X_moons[:,1], c=labels, alpha=0.6)
+    ax.set_title(f"eps = {round(eps, 3)}")
+    
+plt.tight_layout()
+```
+
+yielding :
+
+<img src="static/dbscan.png"/>
+
+
+
+
+
+
+
