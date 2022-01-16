@@ -385,6 +385,64 @@ yielding :
 
 
 
+# NLP
+
+## Spacy 
+
+#### Load a text into a spaCy
+
+```python
+
+import spacy
+
+nlp = spacy.load("en_core_web_sm-3.2.0")
+
+txt = "big loaded text"
+
+doc = nlp(txt) ## transform the raw text into spacy object
+```
+
+#### Function :
+
+1) extracting **sentences** : `doc.sents`
+2) extracting **tokens** : `[token.text for token in doc]`
+3) extracting **tags** : `[(token.text, token.tag_) for token in doc]` or `[(token.text, token.pos_) for token in doc]`
+4) extracting **entities** : `[(entities.text, entities.label_) for entity in doc.ents]`
+5) removing **stop words** : `[token.text for token in doc if token.is_stop of token.is_punct]`
+6) **Lemmatisation** : `[token.lemma_ for token in doc]`
+
+## Topic extraction with LDA
+
+```python 
+from gensim.corpora import Dictionary
+from gensim.models import LdaMulticore
+
+## docs is a list of all the document (one document being the list of preprocessed tokens)
+dictionary = Dictionary(docs)
+
+corpus = [dictionary.doc2bow(doc) for doc in docs]
+
+## COMPUTE THE TOPICS :
+model = LdaMulticore(corpus=corpus, num_topics=4, id2word=dictionary, workers=6)
+
+## display result :
+model.show_topics(num_words=5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
