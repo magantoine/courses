@@ -144,7 +144,7 @@ There is two ways to do. One works with `statsmodel.formula.api` and works with 
 Now having the statistics of this regression yields :
 
 ```python
-import statsmodel.formula.api as smf
+import statsmodels.formula.api as smf
 
 model = smf.ols(formula="time ~ C(diabetes) + C(high_blood_pressure)", data=df)
 res = model.fit() ## fits the model according to the given data
