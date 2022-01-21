@@ -430,6 +430,48 @@ model.show_topics(num_words=5)
 ```
 
 
+### Bootsrapping 
+
+```python
+entries = len(df.index)
+
+## true stat
+ground_truth = f(df)
+
+computed = []
+for i in range(1000):
+    sel_indexes = np.random.choice(np.arange(len(df.index)), entries)
+    computationdf = df.iloc[sel_indexes]
+
+    ## computation
+    computed.append(f(computationdf))
+
+
+computed = [val.values[0] for val in computed]
+computed.sort()
+bootstrap[char] = (ground_truth - computed[25] , computed[975] - ground_truth)
+```
+
+
+##### Error bar graph
+
+<img src="static/error_bars.png">
+
+Suppose you have a `dict` as follows :
+
+```python
+
+## entries of the type : character : [value to substract, value to add]
+bootstrap = {"Sheldon" : [30, 40], ...}
+
+
+f, a = plt.subplots(figsize=(15, 6))
+xerr = np.array(list(bootstrap.values())]).reshape(2, 19)
+plt.errorbar(ground_truths, characters, xerr=xerr, linewidth = 1,
+             linestyle = 'none',marker = 'o',markersize= 3,
+             markerfacecolor = 'black',markeredgecolor = 'black', capsize= 5)
+```
+
 
 
 
