@@ -41,12 +41,20 @@ Now we plot the loglog :
 plt.loglog(bins[1:], n)
 ```
 
-
 TO have a steadier plot you need to use the anti-cumulative histogram i.e. :
 ```python
 n, bins, patches = plt.hist(values, log=True, bins=1000, histtype="step", cumulative=-1)
 plt.loglog(bins[1:], n)
 ```
+
+### Plot heatmaps
+Heatmap plots are useful to show the relationship between **2 categorical + 1 variables**. For it we need to construct a 2D dataframe, for which we can use the `crosstab` function.
+```python
+df = pd.crosstab(df[categorical_var1],df[categorical_var2],
+                  values = df[hue_var], aggfunc='sum')
+sns.heatmap(df)
+```
+
 
 
 ### Statis tests:
